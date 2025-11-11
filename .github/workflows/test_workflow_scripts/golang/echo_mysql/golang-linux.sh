@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # safer bash, but we’ll locally disable -e around commands we want to inspect
 set -Eeuo pipefail
-
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../../common.sh"
 # ----- helpers -----
 section()  { echo "::group::$*"; }
 endsec()   { echo "::endgroup::"; }
@@ -18,19 +19,7 @@ die() {
 }
 trap die ERR
 
-wait_for_mysql() {
-  section "Wait for MySQL readiness"
-  # ping until mysqld accepts connections
-  for i in {1..60}; do
-    if docker exec mysql-container mysql -uroot -ppassword -e "SELECT 1" >/dev/null 2>&1; then
-      echo "MySQL is ready."
-      endsec; return 0
-    fi
-    sleep 1
-  done
-  echo "::error::MySQL did not become ready in time"
-  endsec; return 1
-}
+wait_for_mysql
 
 send_request() {
   local kp_pid="$1"

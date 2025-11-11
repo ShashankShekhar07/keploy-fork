@@ -7,12 +7,13 @@
 
 # --- Script Configuration and Safety ---
 set -Eeuo pipefail
-
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../../common.sh"
 # --- Helper Functions for Logging and Error Handling ---
 
 # Creates a collapsible group in the GitHub Actions log
-section() { echo "::group::$*"; }
-endsec()  { echo "::endgroup::"; }
+section
+endsec
 
 dump_logs() {
   section "Record Log"
